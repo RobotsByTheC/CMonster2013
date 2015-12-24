@@ -1,0 +1,42 @@
+package org.usfirst.frc2084.robotsimulator.wpilibj.networktables;
+
+import org.usfirst.frc2084.robotsimulator.wpilibj.networktables2.NetworkTableNode;
+import org.usfirst.frc2084.robotsimulator.wpilibj.tables.ITable;
+import org.usfirst.frc2084.robotsimulator.wpilibj.tables.ITableListener;
+
+
+
+/**
+ * An adapter that is used to filter value change notifications for a specific key
+ * 
+ * @author Mitchell
+ *
+ */
+public class NetworkTableKeyListenerAdapter implements ITableListener {
+	
+	private final ITableListener targetListener;
+	private final NetworkTable targetSource;
+	private final String relativeKey;
+	private final String fullKey;
+
+	/**
+	 * Create a new adapter
+	 * @param relativeKey the name of the key relative to the table (this is what the listener will receiver as the key)
+	 * @param fullKey the full name of the key in the {@link NetworkTableNode}
+	 * @param targetSource the source that events passed to the target listener will appear to come from
+	 * @param targetListener the listener where events are forwarded to
+	 */
+	public NetworkTableKeyListenerAdapter(String relativeKey, String fullKey, NetworkTable targetSource, ITableListener targetListener){
+		this.relativeKey = relativeKey;
+		this.fullKey = fullKey;
+		this.targetSource = targetSource;
+		this.targetListener = targetListener;
+	}
+
+	public void valueChanged(ITable source, String key, Object value, boolean isNew) {
+		if(key.equals(fullKey)){
+			targetListener.valueChanged(targetSource, relativeKey, value, isNew);
+		}
+	}
+
+}
